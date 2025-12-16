@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Ash Dash</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hud">
+    <div class="hud-left">
+      <div class="brand">ASH DASH</div>
+      <div id="hudSubtitle" class="subtitle">Menu</div>
+    </div>
+
+    <div class="hud-mid">
+      <div class="progress">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Mode</span><b id="modeText">CUBE</b></div>
+        <div class="stat"><span>Coins</span><b id="coinText">0/0</b></div>
+        <div class="stat"><span>Deaths</span><b id="deathText">0</b></div>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <button id="btnMenu" class="btn">Menu</button>
+      <button id="btnPause" class="btn">Pause</button>
+      <button id="btnRestart" class="btn danger">Restart</button>
+    </div>
+  </div>
+
+  <div id="mobileControls" class="mobile hidden">
+    <button id="btnMobilePause" class="mbtn">PAUSE</button>
+    <button id="btnMobileJump" class="mbtn jump">JUMP</button>
+  </div>
+
+  <div id="devicePick" class="overlay hidden">
+    <div class="panel small">
+      <div class="panel-head">
+        <h1>Choose Device</h1>
+        <div class="pill">Ash Dash setup</div>
+      </div>
+      <div class="card">
+        <div class="hint" style="margin-top:0">
+          Pick how you're playing so controls + UI scale correctly.
+        </div>
+        <div class="row wrap" style="margin-top:14px">
+          <button id="btnDeviceDesktop" class="btn primary">Desktop</button>
+          <button id="btnDeviceMobile" class="btn primary">Mobile</button>
+        </div>
+        <div class="row wrap">
+          <button id="btnDeviceAuto" class="btn">Auto-detect</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="menu" class="overlay">
+    <div class="panel">
+      <div class="panel-head">
+        <h1>ASH DASH</h1>
+        <div class="pill" id="unlockPill">Unlocked: 1/30</div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Levels</h3>
+          <div class="row wrap" id="diffTabs"></div>
+          <div class="divider"></div>
+          <div id="levelList" class="level-list"></div>
+          <div class="hint">
+            Jump: <kbd>Space</kbd>/<kbd>Click</kbd>/<kbd>Tap</kbd> • Pause: <kbd>P</kbd>/<kbd>Esc</kbd> • Restart: <kbd>R</kbd><br/>
+            Ball: tap flips gravity • UFO: tap boosts • Wave: hold to go up, release to go down
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Settings</h3>
+          <label class="toggle">
+            <input id="togSound" type="checkbox" checked />
+            <span><b>Music</b><small>Synth from level/editor</small></span>
+          </label>
+          <label class="toggle">
+            <input id="togParticles" type="checkbox" checked />
+            <span><b>Particles</b><small>Trail & bursts</small></span>
+          </label>
+          <div class="row">
+            <div class="range">
+              <b>Cube Skin</b>
+              <select id="cubeSkin" class="select">
+                <option value="neon">Neon</option>
+                <option value="glass">Glass</option>
+                <option value="hollow">Hollow</option>
+                <option value="pixel">Pixel</option>
+                <option value="star">Star</option>
+              </select>
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="range">
+              <b>Base Speed</b>
+              <input id="speedSlider" type="range" min="150" max="320" value="220" />
+              <small id="speedLabel">220</small>
+            </div>
+          </div>
+
+          <div class="row wrap">
+            <button id="btnStart" class="btn primary">Start</button>
+            <button id="btnEditor" class="btn">Level Creator</button>
+            <button id="btnImport" class="btn">Import .txt</button>
+            <button id="btnReset" class="btn danger">Reset Progress</button>
+          </div>
+
+          <input id="fileInput" type="file" accept=".txt,application/json,text/plain" hidden />
+          <div class="hint">
+            Custom levels: Export to a <b>.txt</b> (JSON). Import it later anytime.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editor" class="overlay hidden">
+    <div class="panel">
+      <div class="panel-head">
+        <h1>Level Creator</h1>
+        <div class="pill" id="editorNamePill">My Level</div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Tools</h3>
+          <div class="row wrap" id="toolRow"></div>
+
+          <div class="row wrap">
+            <button id="btnToolSelect" class="chip on">Select</button>
+            <button id="btnToolPan" class="chip">Pan</button>
+            <button id="btnToolDelete" class="chip danger">Delete</button>
+            <button id="btnSnap" class="chip on">Snap: ON</button>
+          </div>
+
+          <div class="row wrap">
+            <button id="btnZoomOut" class="btn">Zoom -</button>
+            <button id="btnZoomIn" class="btn">Zoom +</button>
+          </div>
+
+          <div class="row wrap">
+            <button id="btnTestPlay" class="btn primary">Test Play</button>
+            <button id="btnExport" class="btn">Export .txt</button>
+            <button id="btnImport2" class="btn">Import .txt</button>
+            <button id="btnEditorBack" class="btn">Menu</button>
+          </div>
+
+          <div class="hint">
+            Tip: click on the <b>canvas area to the right</b> of this panel to place blocks.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Synth Maker</h3>
+
+          <div class="row wrap">
+            <div class="range">
+              <b>BPM</b>
+              <input id="bpmSlider" type="range" min="90" max="180" value="128" />
+              <small id="bpmLabel">128</small>
+            </div>
+            <button id="btnPreview" class="btn">Preview</button>
+            <button id="btnStopPreview" class="btn danger">Stop</button>
+          </div>
+
+          <div class="seqBlock">
+            <b>Melody</b> <small>(tap to cycle notes)</small>
+            <div id="seqMelody" class="seq"></div>
+          </div>
+          <div class="seqBlock">
+            <b>Bass</b> <small>(tap to toggle)</small>
+            <div id="seqBass" class="seq"></div>
+          </div>
+          <div class="seqBlock">
+            <b>Drums</b> <small>(tap to toggle)</small>
+            <div id="seqDrums" class="seq"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <script src="levels.js"></script>
+  <script src="audio.js"></script>
+  <script src="editor.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
